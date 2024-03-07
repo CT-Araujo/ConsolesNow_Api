@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework import status
 from django.contrib.auth import get_user_model
 Usermodel = get_user_model()
-
+from .models import Endereco
 
 class UserSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only = True)
@@ -39,3 +39,14 @@ class UserSerializer(serializers.ModelSerializer):
         
         user.save()
         return user
+    
+class UsersLoginSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+    
+    
+class EnderecoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Endereco
+        fields = '__all__'
+        

@@ -48,14 +48,26 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 
 
+class Endereco(models.Model):
+    id = models.UUIDField(primary_key = True, editable = False, unique = False, auto_created = True, default = uuid.uuid4)
+    user = models.ForeignKey(Users, on_delete = models.CASCADE)
+    cep = models.CharField(max_length = 8, blank = False, null = False)
+    estado = models.CharField(max_length = 20, blank = False, null = False)
+    cidade = models.CharField(max_length = 30, blank = False, null = False)
+    bairro = models.CharField(max_length = 40, blank = False, null = False)
+    rua = models.CharField(max_length = 30, blank = False, null = False)
+    numero = models.SmallIntegerField(blank = False, null = False)
+    complemento = models.CharField(max_length = 100, blank = True, null = True)
+    
+    
+    
+
+
 '''
 
 
 164 329 924 78 
 class Carrinho(models.Model):
-    pass
-
-class Endereco(models.Model):
     pass
 
 class Lojas(AbstractBaseUser, PermissionsMixin):
