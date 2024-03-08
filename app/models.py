@@ -64,9 +64,6 @@ class Endereco(models.Model):
 
 
 '''
-
-
-164 329 924 78 
 class Carrinho(models.Model):
     pass
 

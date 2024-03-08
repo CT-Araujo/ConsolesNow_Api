@@ -11,10 +11,49 @@ from .models import Endereco
 
 class UsersViews(APIView):
     def get(self, request):
-        dados = Usermodel.objects.all()
-        serializers = UserSerializer(dados, many = True)
+        filtro = request.query_params.get('id',None)
         
+        if filtro:
+            user = Usermodel.objects.get(id = filtro)
+            enderecos = Endereco.objects.filter(user = filtro)
+            
+            
+            dados_gerais = {
+                
+                "User":
+                    {
+                        "id": user.id,
+                        "nome": user.nome,
+                        "sobrenome": user.sobrenome,
+                        "nasc": user.nasc,
+                        "email": user.email,
+                        "telefone": user.telefone,
+                        "isgoogle": user.isgoogle,
+                        "google_id": user.google_id
+                    },
+                "Endereços":
+                    [{
+                        "id": endereco.id,
+                        "cep": endereco.cep,
+                        "estado": endereco.estado,
+                        "cidade": endereco.cidade,
+                        "bairro": endereco.bairro,
+                        "rua": endereco.rua,
+                        "numero": endereco.numero,
+                        "complemento": endereco.complemento
+                    }
+                     for endereco in enderecos
+                     ]
+            
+                            }
+            return Response(dados_gerais, status = status.HTTP_200_OK)
+        
+        dados = Usermodel.objects.all()            
+        serializers = UserSerializer(dados, many = True)
         return Response(serializers.data, status = status.HTTP_200_OK)
+    
+    
+    
     
     def post(self, request):
         serialzers = UserSerializer(data = request.data)
@@ -38,7 +77,7 @@ class UsersViews(APIView):
                         dados = {
                             "Id": user_data.id,
                             "Email": email, 
-                            "Token": token
+                            "Token": token['access']
                         }
                         
                         return Response(dados, status = status.HTTP_201_CREATED)
@@ -48,7 +87,6 @@ class UsersViews(APIView):
             return Response(ValidaSenha(senha).data, status = status.HTTP_400_BAD_REQUEST) # Caso a senha esteja invalida
         return Response(serialzers.errors,status = status.HTTP_400_BAD_REQUEST) # Caso os dados do serializers não seja válido
     
-    
     def delete(self, request):
         filtro = request.query_params.get('id', None)
         user = Usermodel.objects.get(id = filtro)
@@ -56,9 +94,8 @@ class UsersViews(APIView):
             user.delete()
             return Response(status = status.HTTP_200_OK)
         
-
-
-
+        
+        
 class UsersLoginViews(APIView):
     def post(self,request):
         serializers = UsersLoginSerializer(data = request.data)
@@ -70,7 +107,7 @@ class UsersLoginViews(APIView):
                 token = get_tokens_for_user(user)
                 if token:
                     dados = {
-                        "Token": token,
+                        "Token": token['access'],
                         "id": user_data.id
                         
                     }
