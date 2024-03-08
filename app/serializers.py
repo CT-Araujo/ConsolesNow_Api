@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Usermodel
-        fields = ['nome', 'sobrenome', 'nasc', 'cpf', 'email', 'password','confirm_password','isgoogle','google_id']
+        fields = ['id','nome', 'sobrenome', 'nasc', 'cpf', 'email', 'password','confirm_password','isgoogle','google_id']
         extra_kwargs = {
             'password': {'write_only': True},
             }

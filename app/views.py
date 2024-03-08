@@ -119,6 +119,21 @@ class UsersLoginViews(APIView):
 
 class EnderecoViews(APIView):
     def get(self, request):
+        filtro_user = request.query_params.get('user', None)
+        
+        filtro_id = request.query_params.get('id',None)
+        
+        if filtro_user:
+            dados = Endereco.objects.filter(user = filtro_user)
+            serialzed = EnderecoSerializers(dados, many = True)
+            return Response(serialzed.data, status = status.HTTP_200_OK)
+        
+        if filtro_id:
+            dados = Endereco.objects.filter(id = filtro_id)
+            serialzed = EnderecoSerializers(dados, many = True)
+            return Response(serialzed.data, status = status.HTTP_200_OK)
+            
+            
         dados = Endereco.objects.all()
         serialzed = EnderecoSerializers(dados, many = True)
         
